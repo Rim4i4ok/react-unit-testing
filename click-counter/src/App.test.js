@@ -84,3 +84,42 @@ test("clicking button decrements counter display", () => {
 	const counterDisplay = findByTestAttr(wrapper, "counter-display");
 	expect(counterDisplay.text()).toContain(counter - 1);
 });
+
+test("do not allow decrement 0", () => {
+	const counter = 0;
+	const wrapper = setup(null, { counter });
+
+	// find button and click
+	const button = findByTestAttr(wrapper, "decrement-button");
+	button.simulate("click");
+
+	// find display and test
+	const counterDisplay = findByTestAttr(wrapper, "counter-display");
+	expect(counterDisplay.text()).toContain(counter);
+});
+
+test("do not show warning when decrementing  > 0", () => {
+	const counter = 5;
+	const wrapper = setup(null, { counter });
+
+	// find button and click
+	const button = findByTestAttr(wrapper, "decrement-button");
+	button.simulate("click");
+
+	// find warning and test
+	const warning = findByTestAttr(wrapper, "counter-warning");
+	expect(warning.length).toBe(0);
+});
+
+test("show warning when decrementing 0", () => {
+	const counter = 0;
+	const wrapper = setup(null, { counter });
+
+	// find button and click
+	const button = findByTestAttr(wrapper, "decrement-button");
+	button.simulate("click");
+
+	// find warning and test
+	const warning = findByTestAttr(wrapper, "counter-warning");
+	expect(warning.length).toBe(1);
+});

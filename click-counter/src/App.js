@@ -1,5 +1,4 @@
 import React, { Component } from "react";
-import logo from "./logo.svg";
 import "./App.css";
 
 class App extends Component {
@@ -8,6 +7,7 @@ class App extends Component {
 
 		this.state = {
 			counter: 0,
+			showWarning: false,
 		};
 	}
 
@@ -19,16 +19,33 @@ class App extends Component {
 				</h1>
 				<button
 					data-test="increment-button"
-					onClick={() => this.setState({ counter: this.state.counter + 1 })}
+					onClick={() =>
+						this.setState({
+							counter: this.state.counter + 1,
+							showWarning: false,
+						})
+					}
 				>
 					Increment counter
 				</button>
 				<button
 					data-test="decrement-button"
-					onClick={() => this.setState({ counter: this.state.counter - 1 })}
+					onClick={() => {
+						if (this.state.counter > 0) {
+							this.setState({
+								counter: this.state.counter - 1,
+								showWarning: false,
+							});
+						} else {
+							this.setState({ showWarning: true });
+						}
+					}}
 				>
 					Decrement counter
 				</button>
+				{this.state.showWarning && (
+					<p data-test="counter-warning">Do not click decrement button!</p>
+				)}
 			</div>
 		);
 	}
