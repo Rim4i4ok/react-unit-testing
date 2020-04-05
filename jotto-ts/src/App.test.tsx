@@ -1,7 +1,7 @@
 import Enzyme, { shallow, ShallowWrapper } from 'enzyme';
 import EnzymeAdapter from 'enzyme-adapter-react-16';
 import React from 'react';
-import App from './App';
+import App, { State } from './App';
 
 Enzyme.configure({adapter: new EnzymeAdapter()});
 
@@ -9,11 +9,13 @@ Enzyme.configure({adapter: new EnzymeAdapter()});
  * Factory function to create ShallowWrapper for the App component.
  * @function setup
  * @param {object} props - Component props specific to this setup.
- * @param {ane} state - Initial state for setup.
+ * @param {State} state - Initial state for setup.
  * @return {ShallowWrapper}
  */
-const setup = (props = {}, state = null): ShallowWrapper => {
-  return shallow(<App {...props} />);
+const setup = (props = {}, state?: State): ShallowWrapper => {
+  const wrapper = shallow(<App {...props} />);
+  if (state) wrapper.setState(state);
+  return wrapper;
 }
 
 /**
@@ -51,4 +53,15 @@ test('counter starts at 0', () => {
   expect(initialCounterState).toBe(0);
 });
 
-test('clicking button increment counter disaply', () => {});
+test('clicking button increment counter disaply', () => {
+  const counter = 7;
+  const wrapper = setup({}, { counter });
+  
+  // Find button and click
+  const button = findByTestAttr(wrapper, "increment-button");
+  button.simulate("click");
+
+  // Find display and test value
+  const counterDisplay = findByTestAttr(wrapper, "counter-display");
+  expect(counterDisplay.text()).toContain(counter + 1);
+});
